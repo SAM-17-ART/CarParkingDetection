@@ -2,6 +2,7 @@ import cv2
 import pickle
 import cvzone
 import numpy as np
+from plyer import notification
 cap=cv2.VideoCapture('carPark.mp4')
 with open('CarParkPos', 'rb') as f:
     poslist = pickle.load(f)
@@ -23,7 +24,18 @@ def checkParkingSpace(imgPro):
         cv2.rectangle(img, pos, (pos[0] + width, pos[1] + height), color, thickness)
         cvzone.putTextRect(img, str(count), (x, y + height - 3), scale=1, thickness=2, offset=0, colorR=color)
     cvzone.putTextRect(img, f'Free:{spaceCounter}/{len(poslist)}', (100,50), scale=3, thickness=5, offset=20,colorR=(0,200,0))
-
+     if (spaceCounter>0):
+        notification.notify(
+            title="Message from me",
+            message="Parking Space Available",
+            timeout=10
+        )
+    else:
+        notification.notify(
+            title="Message from me",
+            message="Parking Space Not Available",
+            timeout=10
+        )
 while True:
  if cap.get(cv2.CAP_PROP_POS_FRAMES)==cap.get(cv2.CAP_PROP_FRAME_COUNT):
      cap.set(cv2.CAP_PROP_POS_FRAMES,0)
